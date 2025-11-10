@@ -66,22 +66,6 @@ let decks = [
     "author": "Mikael",
     "description": "Log bait with wallbreakers and evo goblin barrel."
   },
-  {
-    "_id": 7,
-    "name": "Miner Wall Breaker Chip",
-    "img_name": "images/mikaeldeck1.png",
-    "type": "Control",
-    "author": "Mikael",
-    "description": "Miner + wall breaker chip, heavy control."
-  },
-  {
-    "_id": 8,
-    "name": "Evo Valkyrie Valk Combo",
-    "img_name": "images/mikaeldeck2.png",
-    "type": "Control",
-    "author": "Mikael",
-    "description": "Evo Valkyrie and Wall Breakers core synergy."
-  }
 ];
 
 app.get("/api/decks", (req, res)=>{
