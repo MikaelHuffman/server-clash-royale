@@ -81,7 +81,7 @@ let opinions = [
   {
     "_id": 5,
     "user": "Username",
-    "opinion": "SC should've beaten Alabama"
+    "opinion": "SC should've beaten A&M"
   },
   {
     "_id": 6,
