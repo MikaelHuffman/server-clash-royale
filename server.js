@@ -1,21 +1,10 @@
 const express = require("express");
 const cors = require("cors");
-const multer = require("multer");
 const app = express();
+
 app.use(express.static("public"));
 app.use(express.json());
 app.use(cors());
-
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-      cb(null, "./public/images/");
-    },
-    filename: (req, file, cb) => {
-      cb(null, file.originalname);
-    },
-  });
-  
-const upload = multer({ storage: storage });
 
 let decks = [
   {
@@ -68,14 +57,70 @@ let decks = [
   },
 ];
 
-app.get("/api/decks", (req, res)=>{
-    console.log("in get request");
-    res.send(decks);
+let opinions = [
+  {
+    "_id": 1,
+    "user": "Username",
+    "opinion": "EVO Firecracker solos"
+  },
+  {
+    "_id": 2,
+    "user": "Username",
+    "opinion": "Logbait is the worst"
+  },
+  {
+    "_id": 3,
+    "user": "Username",
+    "opinion": "Nerf Evo Piggies"
+  },
+  {
+    "_id": 4,
+    "user": "Username",
+    "opinion": "Boss Bandit is the best card OAT"
+  },
+  {
+    "_id": 5,
+    "user": "Username",
+    "opinion": "SC should've beaten Alabama"
+  },
+  {
+    "_id": 6,
+    "user": "Username",
+    "opinion": "The last one wasn't a Clash Opinion..."
+  },
+];
+
+app.get("/api/decks", (req, res) => {
+  console.log("in get request");
+  res.send(decks);
 });
 
-app.get("/api/decks/:id", (req, res)=>{
-    const deck=decks.find((deck)=>deck._id === parseInt(req.params.id));
-    res.send(deck);
+app.get("/api/decks/:id", (req, res) => {
+  const deck = decks.find((deck) => deck._id === parseInt(req.params.id));
+  res.send(deck);
+});
+
+app.get("/api/opinions", (req, res) => {
+  console.log("in get request /api/opinions");
+  res.send(opinions);
+});
+
+app.get("/api/opinions/:id", (req, res) => {
+  const opinion = opinions.find((op) => op._id === parseInt(req.params.id));
+  res.send(opinion);
+});
+
+app.post("/api/opinions", (req, res) => {
+  const { user, opinion } = req.body;
+
+  const newOpinion = {
+    _id: opinions.length + 1,
+    user,
+    opinion,
+  };
+
+  opinions.push(newOpinion);
+  res.status(200).json(newOpinion);
 });
 
 app.listen(3001, () => {
