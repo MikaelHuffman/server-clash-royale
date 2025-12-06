@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const multer = require("multer");
+const mongoose = require("mongoose");
 const Joi = require("joi");
 const path = require("path");
 const app = express();
@@ -20,6 +21,24 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
+mongoose
+  .connect("mongodb+srv://mikaelhuff05_db_user:rVDlR7bLBLxGJjUC@cluster0.vlsl2vt.mongodb.net/")
+  .then(() => console.log("Connected to mongodb..."))
+  .catch((err) => console.error("could not connect ot mongodb...", err));
+
+const schema = new mongoose.Schema({
+  name: String,
+});
+
+const opinionsSchema = new mongoose.Schema({
+  id: Number,
+  user: String,
+  opinion: String,
+  img: String,
+});
+
+const Opinion = mongoose.model("Opinion", opinionsSchema);
+/*
 let decks = [
   {
     "_id": 1,
@@ -103,6 +122,7 @@ let opinions = [
     "opinion": "The last one wasn't a Clash Opinion..."
   },
 ];
+*/
 
 const opinionSchema = Joi.object({
   user: Joi.string().trim().min(1).required(),
@@ -118,7 +138,8 @@ app.get("/api/decks/:id", (req, res) => {
   res.send(deck);
 });
 
-app.get("/api/opinions", (req, res) => {
+app.get("/api/opinions", async(req, res) => {
+  const opinions = await Opinion.find;
   res.send(opinions);
 });
 
@@ -127,7 +148,7 @@ app.get("/api/opinions/:id", (req, res) => {
   res.send(op);
 });
 
-app.post("/api/opinions", upload.single("img"), (req, res) => {
+app.post("/api/opinions", upload.single("img"), async(req, res) => {
   try {
     let body = req.body;
     const validation = opinionSchema.validate({
@@ -147,6 +168,16 @@ app.post("/api/opinions", upload.single("img"), (req, res) => {
       opinion: body.opinion,
     };
 
+    const opinion = new Opinion({
+      id:req.body.id,
+      user:req.body.user,
+      opinion:req.body.opinion,
+      img:req.body.img,
+    });
+
+    const newOpinions = await opinion.save();
+    res.status(200).send(newOpinions);
+    
     if (req.file) {
       newOpinion.img_name = path.join("images", req.file.filename).replace(/\\/g, "/");
     }
